@@ -21,7 +21,12 @@ class Snake:
         self.scoreboard = self.create_scoreboard()
         self.setup_controls()
 
-    def setup_screen(self):
+    @property
+    def version(self):
+        return 'v1.1'
+
+    @staticmethod
+    def setup_screen():
         """
         Set up the game screen.
         :return: Screen object
@@ -32,7 +37,8 @@ class Snake:
         screen.tracer(0)  # Turn off automatic screen updates
         return screen
 
-    def draw_grid(self):
+    @staticmethod
+    def draw_grid():
         """
         Draw the grid on the screen.
         """
@@ -41,19 +47,20 @@ class Snake:
         grid_turtle.color((0.075, 0.075, 0.075))
         grid_turtle.speed(0)
 
-        for x in range(-WIDTH // 2, WIDTH // 2, GRID_SIZE):
+        for x in range(-WIDTH // 2, WIDTH // 2 + GRID_SIZE, GRID_SIZE):
             grid_turtle.penup()
             grid_turtle.goto(x, -HEIGHT // 2)
             grid_turtle.pendown()
             grid_turtle.goto(x, HEIGHT // 2)
 
-        for y in range(-HEIGHT // 2, HEIGHT // 2, GRID_SIZE):
+        for y in range(-HEIGHT // 2, HEIGHT // 2 + GRID_SIZE, GRID_SIZE):
             grid_turtle.penup()
             grid_turtle.goto(-WIDTH // 2, y)
             grid_turtle.pendown()
             grid_turtle.goto(WIDTH // 2, y)
 
-    def create_snake(self):
+    @staticmethod
+    def create_snake():
         """
         Create the initial snake.
         :return: List of Turtle objects representing the snake
@@ -96,8 +103,8 @@ class Snake:
         scoreboard.color('white')
         scoreboard.penup()
         scoreboard.hideturtle()
-        scoreboard.goto(WIDTH // 2 - 100, HEIGHT // 2 - 40)
-        scoreboard.write(f"Score: {self.score}", align="center", font=("Courier", 24, "normal"))
+        scoreboard.goto(-WIDTH // 2, HEIGHT // 2)
+        scoreboard.write(f"SCORE: {self.score}", font=("Courier", 24, "normal"))
         return scoreboard
 
     def update_scoreboard(self):
@@ -105,7 +112,7 @@ class Snake:
         Update the scoreboard with the current score.
         """
         self.scoreboard.clear()
-        self.scoreboard.write(f"Score: {self.score}", align="center", font=("Courier", 24, "normal"))
+        self.scoreboard.write(f"SCORE: {self.score}", font=("Courier", 24, "normal"))
 
     def add_food(self):
         """
@@ -142,7 +149,7 @@ class Snake:
 
         # Check for collisions with the body
         for part in self.snake[1:]:
-            if head.distance(part) < GRID_SIZE:
+            if head.distance(part) < GRID_SIZE // 2:
                 return False
 
         return True
@@ -185,7 +192,7 @@ class Snake:
         """
         head = self.snake[0]
         for food in self.foods:
-            if head.distance(food) < GRID_SIZE:
+            if head.distance(food) < GRID_SIZE // 2:
                 self.add_body()
                 food.hideturtle()
                 self.foods.remove(food)
